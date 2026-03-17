@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 import pickle
 import pandas as pd
+import mimetypes
+
+mimetypes.add_type('text/css', '.css')
 
 app = Flask(__name__)
 
