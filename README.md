@@ -2,7 +2,7 @@
 
 A modern, full-stack predictive AI dashboard that analyzes and forecasts historical and demographic tourism patterns across 20 distinct tourist destinations in Maharashtra, India. 
 
-![Dashboard Overview](static/dashboard_preview.png) *(Preview of the final UI)*
+![Dashboard Overview](https://historical-tourism-analysis.onrender.com) *(Preview of the final UI)*
 
 ---
 
