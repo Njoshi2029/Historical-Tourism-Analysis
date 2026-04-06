@@ -38,7 +38,7 @@ The system features:
 
 ---
 
-## 📁 Repository Structure
+## 📁 Repository Structur
 
 ```text
 Tourism_Analysis_Project/
