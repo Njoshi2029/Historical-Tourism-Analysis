@@ -16,7 +16,6 @@ A modern, full-stack predictive AI dashboard that analyzes and forecasts histori
     - [Phase 4: UI/UX & Dashboard](#phase-4-modern-ui--dashboard)
 4. [Installation & Usage](#-installation--usage)
 
----
 
 ## 🚀 Project Overview
 
