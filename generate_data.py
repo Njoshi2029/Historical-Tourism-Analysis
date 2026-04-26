@@ -1,9 +1,21 @@
 import pandas as pd
 import random
 import pickle
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+
+# Seed for reproducibility
+random.seed(42)
+np.random.seed(42)
+
+# Helper: flip a categorical label to a random different choice ~noise_rate of the time
+def add_noise(value, choices, noise_rate=0.15):
+    if random.random() < noise_rate:
+        others = [c for c in choices if c != value]
+        return random.choice(others)
+    return value
 
 # 1. Generate Fake Data with 20 distinct places
 
@@ -115,6 +127,12 @@ for _ in range(10000):
     else:
         foreign = "No"
 
+    # Apply ~15% label noise to make the model realistic (80-85% accuracy)
+    noisy_crowd   = add_noise(visitor_count_level, ["High", "Medium", "Low"])
+    noisy_kids    = add_noise(kids,   ["High", "Medium", "Low"])
+    noisy_seniors = add_noise(seniors,["High", "Medium", "Low"])
+    noisy_foreign = add_noise(foreign,["Yes", "No"])
+
     data.append({
         "Place": place,
         "District": districts[place],
@@ -122,11 +140,11 @@ for _ in range(10000):
         "Season": season,
         "Weekend": weekend,
         "Weather": random.choice(weather_map[season]),
-        "Visitor_Count_Level": visitor_count_level,
+        "Visitor_Count_Level": noisy_crowd,
         "Visitor_Type": random.choice(["Families", "Students", "Foreign Tourists", "Couples", "Solo Travelers"]),
-        "Foreign_Tourists": foreign,
-        "Kids_Visitors": kids,
-        "Senior_Citizens": seniors,
+        "Foreign_Tourists": noisy_foreign,
+        "Kids_Visitors": noisy_kids,
+        "Senior_Citizens": noisy_seniors,
         "Business_Activity": random.choice(["High", "Medium", "Low"])
     })
 
@@ -162,7 +180,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 print("Training models...")
 models = {}
 for target in targets:
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    # Constrained RF to prevent overfitting and achieve realistic 80-85% accuracy
+    model = RandomForestClassifier(
+        n_estimators=50,
+        max_depth=8,
+        min_samples_leaf=5,
+        random_state=42
+    )
     model.fit(X_train, y_train[target])
     
     train_acc = model.score(X_train, y_train[target])
